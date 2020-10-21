@@ -1,0 +1,109 @@
+version: '3'
+
+services:
+  redis-1:
+    container_name: redis-1
+    image: redis
+    # ports:
+    #   - 6379:6379
+    volumes: 
+      - ./node1/cluster-config.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - red_cluster
+    command: redis-server /usr/local/etc/redis/redis.conf
+    # env_file:
+    #   - './redis/env/master_variables.env'
+
+
+  redis-2:
+
+    container_name: redis-2
+    image: redis
+    # ports:
+    #   - 6380:6379
+    volumes: 
+      - ./node2/cluster-config.conf:/usr/local/etc/redis/redis.conf
+    # depends_on:
+    #   - redis01
+    networks:
+      - red_cluster
+    # env_file:
+    #   - './redis/env/slave_variables.env'
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-3:
+    container_name: redis-3
+    image: redis
+    # ports:
+    #   - 6381:6379
+    volumes: 
+      - ./node3/cluster-config.conf:/usr/local/etc/redis/redis.conf
+    # depends_on:
+    #   - redis01
+    networks:
+      - red_cluster
+    # env_file:
+    #   - './redis/env/slave_variables.env'
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-4:
+    container_name: redis-4
+    image: redis
+    # ports:
+    #   - 6379:6379
+    volumes:
+      - ./node4/cluster-config.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - red_cluster
+    # env_file:
+    #   - './redis/env/master_variables.env'
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-5:
+
+    container_name: redis-5
+    image: redis
+    # ports:
+    #   - 6380:6379
+    volumes: 
+      - ./node5/cluster-config.conf:/usr/local/etc/redis/redis.conf
+    # depends_on:
+    #   - redis01
+    networks:
+      - red_cluster
+    # env_file:
+    #   - './redis/env/slave_variables.env'
+    command:  redis-server /usr/local/etc/redis/redis.conf
+
+  redis-6:
+    container_name: redis-6
+    image: redis
+    # ports:
+    #   - 6381:6379
+    volumes: 
+      - ./node6/cluster-config.conf:/usr/local/etc/redis/redis.conf
+    # depends_on:
+    #   - redis01
+    networks:
+      - red_cluster
+    # env_file:
+    #   - './redis/env/slave_variables.env'
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  proxy:
+    build: ./haproxy
+    depends_on:
+      - redis-1
+      - redis-2
+      - redis-3
+      - redis-4
+      - redis-5
+      - redis-6
+    networks:
+      - red_cluster
+    ports:
+      - '8888:9000'
+      - '8080:80'
+
+networks:
+  red_cluster:
