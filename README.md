@@ -1,5 +1,5 @@
 # cluster-redis-HA
- # Requirimentos: 
+ # Requerimentos: 
     - Docker 
     - Docker Compose 
     - Redis-cli (Opcional)
